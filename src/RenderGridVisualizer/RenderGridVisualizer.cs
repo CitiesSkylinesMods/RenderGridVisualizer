@@ -35,6 +35,8 @@ namespace RenderGridVisualizer
             _guiStyleRed.normal.background = _textureRed;
 
             _renderedGroups = RenderManager.instance.m_renderedGroups;
+            GameObject controllerGameObject = ToolsModifierControl.toolController.gameObject;
+            _tool = controllerGameObject.GetComponent<OverlayGridTool>() ?? controllerGameObject.AddComponent<OverlayGridTool>();
         }
 
         private void OnGUI()

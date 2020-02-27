@@ -11,24 +11,20 @@ namespace RenderGridVisualizer {
         private static int _tilesWidth = 1;
         private static bool _onOff;
 
-        private static Rect _buttonPosition = new Rect(new Vector2(100, 40), new Vector2(80, 20));
-        private static Rect _sliderLabelPosition = new Rect(430, 35, 50, 20);
-        private static Rect _sliderPosition = new Rect(210, 40, 200, 20);
-
-        private static Rect _test;
+        private static Rect _buttonPosition = new Rect(new Vector2(500, 10), new Vector2(80, 20));
+        private static Rect _sliderLabelPosition = new Rect(730, 35, 50, 20);
+        private static Rect _sliderPosition = new Rect(510, 40, 200, 20);
 
         protected override void OnToolGUI(Event e) {
             base.OnToolGUI(e);
 
             _tilesWidth = (int) Math.Floor(GUI.HorizontalSlider(_sliderPosition, _tilesWidth, 1, 60));
             GUI.Label(_sliderLabelPosition, $"{_tilesWidth}x{_tilesWidth}");
-            
+
             if (GUI.Button(_buttonPosition, (_onOff ? "Disable" : "Enable"))) {
                 _onOff = !_onOff;
             }
 
-            T(ref _test);
-            
             RaycastInput input = new RaycastInput(m_mouseRay, m_mouseRayLength);
             if (RayCast(input, out RaycastOutput output)) {
                 _cursorPos = output.m_hitPos;
@@ -40,10 +36,6 @@ namespace RenderGridVisualizer {
             if (_onOff) {
                 RenderGrid(cameraInfo);
             }
-        }
-
-        private static void T(ref Rect r) {
-            _test = r;
         }
 
         private void RenderGrid(RenderManager.CameraInfo cameraInfo) {
