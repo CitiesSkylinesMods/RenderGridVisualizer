@@ -15,6 +15,8 @@ namespace RenderGridVisualizer
         private readonly float _uiItemGapLength = 1f;
 
         private FastList<RenderGroup> _renderedGroups;
+        private bool _isOn;
+        private OverlayGridTool _tool;
 
         private void Start()
         {
@@ -63,6 +65,17 @@ namespace RenderGridVisualizer
                         GUI.Box(new Rect(position.x, position.y, _uiItemLength, _uiItemLength), GUIContent.none, _guiStyleRed);
                     }
                 }
+            }
+
+            //bug... tool like TM:PE cannot be changed when this is enabled.
+            _isOn = GUI.Toggle(new Rect(600, 15, 100, 20), _isOn, "Toggle Grid");
+
+            if (_isOn && ToolsModifierControl.toolController.CurrentTool != _tool) {
+                ToolsModifierControl.toolController.CurrentTool = _tool;
+                ToolsModifierControl.SetTool<OverlayGridTool>();
+            } else if (!_isOn && ToolsModifierControl.toolController.CurrentTool == _tool) {
+                ToolsModifierControl.toolController.CurrentTool = ToolsModifierControl.GetTool<DefaultTool>();
+                ToolsModifierControl.SetTool<DefaultTool>();
             }
         }
 
