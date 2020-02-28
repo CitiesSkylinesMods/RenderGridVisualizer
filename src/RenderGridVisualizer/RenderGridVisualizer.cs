@@ -7,13 +7,11 @@ namespace RenderGridVisualizer
         private Texture2D _textureWhite;
         private Texture2D _textureRed;
 
-        private GUIStyle _guiStyleWhite;
-        private GUIStyle _guiStyleRed;
-
         private readonly int _renderGridLength = 45;
         private readonly float _uiItemLength = 10f;
         private readonly float _uiItemGapLength = 1f;
 
+        private RenderGroup[] _renderGroups;
         private FastList<RenderGroup> _renderedGroups;
         private bool _isOn;
         private OverlayGridTool _tool;
@@ -28,12 +26,7 @@ namespace RenderGridVisualizer
             _textureRed.SetPixel(0, 0, Color.red);
             _textureRed.Apply();
 
-            _guiStyleWhite = new GUIStyle();
-            _guiStyleWhite.normal.background = _textureWhite;
-
-            _guiStyleRed = new GUIStyle();
-            _guiStyleRed.normal.background = _textureRed;
-
+            _renderGroups = RenderManager.instance.m_groups;
             _renderedGroups = RenderManager.instance.m_renderedGroups;
             GameObject controllerGameObject = ToolsModifierControl.toolController.gameObject;
             _tool = controllerGameObject.GetComponent<OverlayGridTool>() ?? controllerGameObject.AddComponent<OverlayGridTool>();
@@ -41,30 +34,29 @@ namespace RenderGridVisualizer
 
         private void OnGUI()
         {
-            for (var i = 0; i < _renderGridLength; i++)
+            if (!Event.current.type.Equals(EventType.Repaint))
             {
-                for (var j = 0; j < _renderGridLength; j++)
+                return;
+            }
+
+            var renderedGroupIndex = 0;
+            var renderedGroup = _renderedGroups[renderedGroupIndex];
+            for (int x = 0; x < _renderGridLength; x++)
+            {
+                for (int y = 0; y < _renderGridLength; y++)
                 {
-                    var found = false;
-
-                    for (int k = 0; k < _renderedGroups.m_size; k++)
+                    var position = GetPosition(x, y, _uiItemLength, _uiItemGapLength);
+                    var renderGroupIndex = x * _renderGridLength + y;
+                    var renderGroup = _renderGroups[renderGroupIndex];
+                    if (renderedGroupIndex < _renderedGroups.m_size && renderGroup == renderedGroup)
                     {
-                        var renderGroup = _renderedGroups[k];
-                        if (renderGroup.m_x == i && renderGroup.m_z == j)
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    var position = GetPosition(i, j, _uiItemLength, _uiItemGapLength);
-                    if (found)
-                    {
-                        GUI.Box(new Rect(position.x, position.y, _uiItemLength, _uiItemLength), GUIContent.none, _guiStyleWhite);
+                        GUI.DrawTexture(new Rect(position, new Vector2(_uiItemLength, _uiItemLength)), _textureWhite);
+                        renderedGroupIndex++;
+                        renderedGroup = _renderedGroups[renderedGroupIndex];
                     }
                     else
                     {
-                        GUI.Box(new Rect(position.x, position.y, _uiItemLength, _uiItemLength), GUIContent.none, _guiStyleRed);
+                        GUI.DrawTexture(new Rect(position, new Vector2(_uiItemLength, _uiItemLength)), _textureRed);
                     }
                 }
             }
