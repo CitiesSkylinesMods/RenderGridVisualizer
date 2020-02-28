@@ -34,6 +34,9 @@ namespace RenderGridVisualizer
 
         private void OnGUI()
         {
+            //bug... tool like TM:PE cannot be changed when this is enabled.
+            _isOn = GUI.Toggle(new Rect(600, 15, 100, 20), _isOn, "Toggle Grid");
+
             if (!Event.current.type.Equals(EventType.Repaint))
             {
                 return;
@@ -60,9 +63,6 @@ namespace RenderGridVisualizer
                     }
                 }
             }
-
-            //bug... tool like TM:PE cannot be changed when this is enabled.
-            _isOn = GUI.Toggle(new Rect(600, 15, 100, 20), _isOn, "Toggle Grid");
 
             if (_isOn && ToolsModifierControl.toolController.CurrentTool != _tool) {
                 ToolsModifierControl.toolController.CurrentTool = _tool;
