@@ -15,6 +15,13 @@ namespace RenderGridVisualizer {
         private static Rect _sliderLabelPosition = new Rect(730, 35, 50, 20);
         private static Rect _sliderPosition = new Rect(510, 40, 200, 20);
 
+        private Texture2D _renderTexture = null;
+
+        public void SetRenderTexture(Texture2D renderTexture)
+        {
+            _renderTexture = renderTexture;
+        }
+
         protected override void OnToolGUI(Event e) {
             base.OnToolGUI(e);
 
@@ -54,14 +61,22 @@ namespace RenderGridVisualizer {
         }
 
         private void RenderQuad(RenderManager.CameraInfo cameraInfo, Vector3 pos, int i, int y) {
-            Quad3 quad = default(Quad3);
-            quad.a = pos;
-            quad.b = new Vector3(pos.x + GRID_CELL_SIZE, pos.y, pos.z);
-            quad.c = new Vector3(pos.x + GRID_CELL_SIZE, pos.y, pos.z + GRID_CELL_SIZE);
-            quad.d = new Vector3(pos.x, pos.y, pos.z + GRID_CELL_SIZE);
+            var quad = new Quad3(
+                pos,
+                new Vector3(pos.x + GRID_CELL_SIZE, pos.y, pos.z),
+                new Vector3(pos.x + GRID_CELL_SIZE, pos.y, pos.z + GRID_CELL_SIZE),
+                new Vector3(pos.x, pos.y, pos.z + GRID_CELL_SIZE)
+            );
             Color color = (i % 2 == 0 ^ y % 2 != 0 ? Color.yellow : Color.white);
             color.a = GRID_COLOR_ALPHA;
-            RenderManager.instance.OverlayEffect.DrawQuad(cameraInfo, color, quad, -10000f, 10025f, false, true);
+            if (_renderTexture == null)
+            {
+                RenderManager.instance.OverlayEffect.DrawQuad(cameraInfo, color, quad, -10000f, 10025f, false, true);
+            }
+            else
+            {
+                RenderManager.instance.OverlayEffect.DrawQuad(cameraInfo, _renderTexture, Color.white, quad, -10000f, 10025f, false, true);
+            }
         }
     }
 }
