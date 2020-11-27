@@ -26,7 +26,7 @@ namespace RenderGridVisualizer {
             base.OnToolGUI(e);
 
             _tilesWidth = (int) Math.Floor(GUI.HorizontalSlider(_sliderPosition, _tilesWidth, 1, 60));
-            GUI.Label(_sliderLabelPosition, $"{_tilesWidth}x{_tilesWidth}");
+            GUI.Label(_sliderLabelPosition, _tilesWidth.ToString() + "x" + _tilesWidth.ToString());
 
             if (GUI.Button(_buttonPosition, (_onOff ? "Disable" : "Enable"))) {
                 _onOff = !_onOff;
